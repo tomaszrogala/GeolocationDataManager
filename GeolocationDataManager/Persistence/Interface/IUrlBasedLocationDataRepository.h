@@ -9,6 +9,10 @@ namespace Persistence
     class IUrlBasedLocationDataRepository
     {
     public:
+        virtual ~IUrlBasedLocationDataRepository() {}
+
+        virtual bool Initialize() = 0;
+
         virtual std::vector<Model::UrlBasedLocationData> GetAll() = 0;
 
         virtual void Add(const Model::UrlBasedLocationData& data) = 0;

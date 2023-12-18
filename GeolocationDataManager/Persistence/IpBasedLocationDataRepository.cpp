@@ -30,6 +30,9 @@ namespace Persistence
 {
     IpBasedLocationDataRepository::IpBasedLocationDataRepository(std::shared_ptr<IDatabaseConnectionFactory> databaseConnectionFactory)
     : mDatabaseConnectionFactory(databaseConnectionFactory)
+    {}
+
+    bool IpBasedLocationDataRepository::Initialize()
     {
         auto connectionName = QString("Initial");
 
@@ -37,7 +40,7 @@ namespace Persistence
 
         if (!db.open()) {
             qDebug() << "Error opening database. Last error: " << db.lastError().text();
-            return;
+            return false;
         }
 
         QSqlQuery query(QSqlDatabase::database(connectionName));
@@ -62,12 +65,15 @@ namespace Persistence
                                .arg(LATITUDE_COLUMN_NAME)
                                .arg(LONGITUDE_COLUMN_NAME);
 
+
         if (!query.exec(queryStr)) {
             qDebug() << "Error creating table: " << query.lastError().text();
+            return false;
         }
 
         db.close();
         QSqlDatabase::removeDatabase(connectionName);
+        return true;
     }
 
     std::vector<Model::IpBasedLocationData> IpBasedLocationDataRepository::GetAll()

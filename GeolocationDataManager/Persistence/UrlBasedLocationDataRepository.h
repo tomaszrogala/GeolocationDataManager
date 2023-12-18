@@ -13,6 +13,8 @@ namespace Persistence
     public:
         UrlBasedLocationDataRepository(std::shared_ptr<IDatabaseConnectionFactory> databaseConnectionFactory);
 
+        bool Initialize() override;
+
         std::vector<Model::UrlBasedLocationData> GetAll() override;
 
         Model::UrlBasedLocationData GetByUrl(const QString& url) override;

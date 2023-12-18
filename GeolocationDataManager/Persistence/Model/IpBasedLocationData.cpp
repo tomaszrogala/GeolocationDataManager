@@ -27,8 +27,10 @@ namespace Persistence
         {
             QJsonDocument jsonResponse = QJsonDocument::fromJson(locationDataJsonString.toUtf8());
 
-            if (!jsonResponse.isNull()) {
-                if (jsonResponse.isObject()) {
+            if (!jsonResponse.isNull())
+            {
+                if (jsonResponse.isObject())
+                {
                     QJsonObject jsonObj = jsonResponse.object();
 
                     this->ip = jsonObj[IP_JSON_KEY].toString();
@@ -44,11 +46,15 @@ namespace Persistence
                     this->latitude = jsonObj[LATITUDE_JSON_KEY].toDouble();
                     this->longitude = jsonObj[LONGITUDE_JSON_KEY].toDouble();
 
-                } else {
+                }
+                else
+                {
                     qDebug() << "Response is not an object";
                     return false;
                 }
-            } else {
+            }
+            else
+            {
                 qDebug() << "Invalid JSON Document";
                 return false;
             }
@@ -56,7 +62,7 @@ namespace Persistence
             return true;
         }
 
-        QString IpBasedLocationData::Str() const //TODO: Format this data in a more pretie form
+        QString IpBasedLocationData::Str() const
         {
             if(this->ip.isNull() || this->ip.isEmpty())
             {

@@ -21,6 +21,16 @@ MainWindow::MainWindow(
 {
     mUi->setupUi(this);
 
+    if(!mIpBasedRepository->Initialize())
+    {
+        displayErrorMessage("Location table creation failed! Application will not work properly. Please check the database file and run again.");
+    }
+
+    if(!mUrlBasedRepository->Initialize())
+    {
+        displayErrorMessage("Location table creation failed! Application will not work properly. Please check the database file and run again.");
+    }
+
     connect(mUi->addButton, &QPushButton::clicked, this, &MainWindow::onAddButtonClicked);
     connect(mUi->deleteButton, &QPushButton::clicked, this, &MainWindow::onDeleteButtonClicked);
     connect(mUi->getDataButton, &QPushButton::clicked, this, &MainWindow::onGetDataButtonClicked);
@@ -77,19 +87,28 @@ void MainWindow::handleLocationData(const QString &locationDataJsonString, const
     qDebug() << locationDataJsonString;
     if(locationDataJsonString.isNull())
     {
-        displayErrorMessage(input);
+        displayErrorMessage("Input is invalid!");
         return;
     }
 
-    if(locationDataJsonString.isEmpty())
+    if(mInputValidator->IsInvalid(input))
     {
+        displayErrorMessage("Input is invalid!");
         return;
     }
 
     if(mInputValidator->IsUrl(input))
     {
         Persistence::Model::UrlBasedLocationData urlLocationData;
-        urlLocationData.FromJson(locationDataJsonString);
+        try
+        {
+            urlLocationData.FromJson(locationDataJsonString);
+        }
+        catch (const std::exception& e)
+        {
+            qDebug() << QString("Parsing Data failed with exception: ").arg(e.what());
+            displayErrorMessage(QString("Parsing Data failed with exception: ").arg(e.what()));
+        }
 
         urlLocationData.url = input;
 
@@ -115,7 +134,21 @@ void MainWindow::onAddButtonClicked()
         return;
     }
 
-    mIpStackClient->GetLocationDataRequest(input);
+    if(mInputValidator->IsInvalid(input))
+    {
+        displayErrorMessage("Input is invalid!");
+        return;
+    }
+
+    try
+    {
+        mIpStackClient->GetLocationDataRequest(input);
+    }
+    catch (const std::exception& e) {
+        qDebug() << QString("Get location data request failed with exception: ").arg(e.what());
+        displayErrorMessage(QString("Get location data request failed with exception: ").arg(e.what()));
+    }
+
 }
 
 void MainWindow::onDeleteButtonClicked()
@@ -127,6 +160,12 @@ void MainWindow::onDeleteButtonClicked()
     if(input.isNull() || input.isEmpty())
     {
         displayErrorMessage("Input data are empty. Please provide ip or url.");
+        return;
+    }
+
+    if(mInputValidator->IsInvalid(input))
+    {
+        displayErrorMessage("Input is invalid!");
         return;
     }
 
@@ -171,6 +210,12 @@ void MainWindow::onGetDataButtonClicked()
     if(input.isNull() || input.isEmpty())
     {
         displayErrorMessage("Input data are empty. Please provide ip or url.");
+        return;
+    }
+
+    if(mInputValidator->IsInvalid(input))
+    {
+        displayErrorMessage("Input is invalid!");
         return;
     }
 

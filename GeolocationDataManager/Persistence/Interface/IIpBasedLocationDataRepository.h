@@ -11,6 +11,8 @@ namespace Persistence
     public:
         virtual ~IIpBasedLocationDataRepository() {}
 
+        virtual bool Initialize() = 0;
+
         virtual std::vector<Model::IpBasedLocationData> GetAll() = 0;
 
         virtual Model::IpBasedLocationData GetByIp(const QString& ip) = 0;

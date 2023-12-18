@@ -1,5 +1,4 @@
-#ifndef IIPSTACKCLIENT_H
-#define IIPSTACKCLIENT_H
+#pragma once
 
 #include <QString>
 
@@ -14,4 +13,3 @@ namespace HttpNetwork
     };
 }
 
-#endif // IIPSTACKCLIENT_H

@@ -58,7 +58,7 @@ namespace Persistence
 
         QString UrlBasedLocationData::Str() const
         {
-            return QString("URL: 1% IP: %2, Type: %3, Continent Code: %4, Continent Name: %5, Country Code: %6, "
+            return QString("URL: %1 IP: %2, Type: %3, Continent Code: %4, Continent Name: %5, Country Code: %6, "
                            "Country Name: %7, Region Code: %8, Region Name: %9, City: %10, ZIP: %11, "
                            "Latitude: %12, Longitude: %13")
                 .arg(url)

@@ -13,6 +13,8 @@ namespace Persistence
     public:
         IpBasedLocationDataRepository(std::shared_ptr<IDatabaseConnectionFactory> databaseConnectionFactory);
 
+        bool Initialize() override;
+
         std::vector<Model::IpBasedLocationData> GetAll() override;
 
         Model::IpBasedLocationData GetByIp(const QString& ip) override;

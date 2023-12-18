@@ -1,5 +1,5 @@
-#ifndef IINPUTVALIDATOR_H
-#define IINPUTVALIDATOR_H
+#pragma once
+
 #include <QString>
 
 namespace Helpers
@@ -10,6 +10,6 @@ namespace Helpers
         virtual ~IInputValidator() {}
 
         virtual bool IsUrl(const QString& input) const = 0;
+        virtual bool IsInvalid(const QString& input) const = 0;
     };
 }
-#endif // IINPUTVALIDATOR_H

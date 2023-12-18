@@ -4,36 +4,37 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include "InMemoryDatabaseConnectionFactory.h"
-#include "IpBasedLocationDataRepository_Should.h"
+#include "UrlBasedLocationDataRepository_Should.h"
 
-IpBasedLocationDataRepository_Should::IpBasedLocationDataRepository_Should()
+UrlBasedLocationDataRepository_Should::UrlBasedLocationDataRepository_Should()
 {
     auto factory = std::make_shared<Persistence::InMemoryDatabaseConnectionFactory>();
-    mSut = std::make_unique<Persistence::IpBasedLocationDataRepository>(factory);
+    mSut = std::make_unique<Persistence::UrlBasedLocationDataRepository>(factory);
 }
 
-IpBasedLocationDataRepository_Should::~IpBasedLocationDataRepository_Should()
+UrlBasedLocationDataRepository_Should::~UrlBasedLocationDataRepository_Should()
 {
     CleanDatabaseTable();
 }
 
-void IpBasedLocationDataRepository_Should::initTestCase()
+void UrlBasedLocationDataRepository_Should::initTestCase()
 {
     mTestDataList = {
-        {1, "192.168.1.1", "Type1", "EU", "Europe",
+        {1, "http://example2.com/1", "192.168.1.1", "Type1", "EU", "Europe",
                       "PL", "Poland", "PL-MA", "Malopolska", "Krakow", "30-001", 50.0619, 19.9368},
-                     {2, "192.168.1.2", "Type2", "NA", "North America",
+                     {2, "http://example3.com/2", "192.168.1.2", "Type2", "NA", "North America",
                       "US", "United States", "US-CA", "California", "Los Angeles", "90001", 34.0522, -118.2437},
-                     {3, "192.168.2.1", "Type3", "AS", "Asia",
+                     {3, "https://example.com/3", "192.168.2.1", "Type3", "AS", "Asia",
                       "CN", "China", "CN-BJ", "Beijing", "Beijing", "100000", 39.9042, 116.4074},
-                     {4, "10.0.0.1", "Type4", "AN", "Antarctica",
+                     {4, "http://example.com/4", "10.0.0.1", "Type4", "AN", "Antarctica",
                       "", "", "", "", "", "0", -82.8628, 135.0000},
                      };
 
+
     CleanDatabaseTable();
 }
 
-void IpBasedLocationDataRepository_Should::AddLocationDataAndGetLocationDataByIp()
+void UrlBasedLocationDataRepository_Should::AddLocationDataAndGetLocationDataByUrl()
 {
     for (const auto& locationTestData : mTestDataList)
     {
@@ -42,12 +43,12 @@ void IpBasedLocationDataRepository_Should::AddLocationDataAndGetLocationDataByIp
 
     for (const auto& locationTestData : mTestDataList)
     {
-        auto result = mSut->GetByIp(locationTestData.ip);
+        auto result = mSut->GetByUrl(locationTestData.url);
         PerformAssertions(result, locationTestData);
     }
 }
 
-void IpBasedLocationDataRepository_Should::GetAllLocationData()
+void UrlBasedLocationDataRepository_Should::GetAllLocationData()
 {
     auto allData = mSut->GetAll();
     QCOMPARE(allData.size(), mTestDataList.size());
@@ -57,15 +58,15 @@ void IpBasedLocationDataRepository_Should::GetAllLocationData()
     }
 }
 
-void IpBasedLocationDataRepository_Should::DeleteLocationDataByIp()
+void UrlBasedLocationDataRepository_Should::DeleteLocationDataByUrl()
 {
     auto deletedTestDataIndex = 1;
-    auto result = mSut->GetByIp(mTestDataList[deletedTestDataIndex].ip);
-    QCOMPARE(result.ip, mTestDataList[deletedTestDataIndex].ip);
+    auto result = mSut->GetByUrl(mTestDataList[deletedTestDataIndex].url);
+    QCOMPARE(result.url, mTestDataList[deletedTestDataIndex].url);
 
-    mSut->DeleteByIp(mTestDataList[deletedTestDataIndex].ip);
-    result = mSut->GetByIp(mTestDataList[deletedTestDataIndex].ip);
-    QVERIFY(result.ip.isEmpty() || result.ip.isNull());
+    mSut->DeleteByUrl(mTestDataList[deletedTestDataIndex].url);
+    result = mSut->GetByUrl(mTestDataList[deletedTestDataIndex].url);
+    QVERIFY(result.url.isEmpty() || result.url.isNull());
 
     auto allData = mSut->GetAll();
     QCOMPARE(allData.size(), mTestDataList.size() - 1);
@@ -73,22 +74,22 @@ void IpBasedLocationDataRepository_Should::DeleteLocationDataByIp()
 
     for (const auto& locationTestData : mTestDataList)
     {
-        if(locationTestData.ip == mTestDataList[deletedTestDataIndex].ip)
+        if(locationTestData.url == mTestDataList[deletedTestDataIndex].url)
         {
             continue;
         }
 
-        auto result = mSut->GetByIp(locationTestData.ip);
+        auto result = mSut->GetByUrl(locationTestData.url);
         PerformAssertions(result, locationTestData);
     }
 }
 
-void IpBasedLocationDataRepository_Should::cleanupTestCase()
+void UrlBasedLocationDataRepository_Should::cleanupTestCase()
 {
     CleanDatabaseTable();
 }
 
-void IpBasedLocationDataRepository_Should::PerformAssertions(const Persistence::Model::IpBasedLocationData &result, const Persistence::Model::IpBasedLocationData &testData)
+void UrlBasedLocationDataRepository_Should::PerformAssertions(const Persistence::Model::UrlBasedLocationData &result, const Persistence::Model::UrlBasedLocationData &testData)
 {
     QCOMPARE(result.ip, testData.ip);
     QCOMPARE(result.type, testData.type);
@@ -104,13 +105,13 @@ void IpBasedLocationDataRepository_Should::PerformAssertions(const Persistence::
     QCOMPARE(result.longitude, testData.longitude);
 }
 
-void IpBasedLocationDataRepository_Should::CleanDatabaseTable()
+void UrlBasedLocationDataRepository_Should::CleanDatabaseTable()
 {
     for (const auto& locationTestData : mTestDataList)
     {
-        mSut->DeleteByIp(locationTestData.ip);
+        mSut->DeleteByUrl(locationTestData.url);
     }
 }
 
-#include "IpBasedLocationDataRepository_Should.moc"
+#include "UrlBasedLocationDataRepository_Should.moc"
 

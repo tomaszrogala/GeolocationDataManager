@@ -1,5 +1,4 @@
-#ifndef INPUTVALIDATOR_H
-#define INPUTVALIDATOR_H
+#pragma once
 
 #include "IInputValidator.h"
 
@@ -11,6 +10,6 @@ namespace Helpers
         InputValidator() = default;
 
         bool IsUrl(const QString& input) const override;
+        bool IsInvalid(const QString& input) const override;
     };
 }
-#endif // INPUTVALIDATOR_H

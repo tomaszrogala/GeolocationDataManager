@@ -31,13 +31,18 @@ namespace Persistence
     UrlBasedLocationDataRepository::UrlBasedLocationDataRepository(std::shared_ptr<IDatabaseConnectionFactory> databaseConnectionFactory)
     : mDatabaseConnectionFactory(databaseConnectionFactory)
     {
+
+    }
+
+    bool UrlBasedLocationDataRepository::Initialize()
+    {
         auto connectionName = QString("Initial");
 
         auto db = mDatabaseConnectionFactory->CreateSqliteConnection(DATABASE_NAME, connectionName);
 
         if (!db.open()) {
             qDebug() << "Error opening database. Last error: " << db.lastError().text();
-            return;
+            return false;
         }
 
         QSqlQuery query(QSqlDatabase::database(connectionName));
@@ -65,10 +70,12 @@ namespace Persistence
 
         if (!query.exec(queryStr)) {
             qDebug() << "Error creating table: " << query.lastError().text();
+            return false;
         }
 
         db.close();
         QSqlDatabase::removeDatabase(connectionName);
+        return true;
     }
 
     std::vector<Model::UrlBasedLocationData> UrlBasedLocationDataRepository::GetAll()
