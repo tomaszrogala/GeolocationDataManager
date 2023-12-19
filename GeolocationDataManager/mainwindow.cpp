@@ -108,6 +108,7 @@ void MainWindow::handleLocationData(const QString &locationDataJsonString, const
         {
             qDebug() << QString("Parsing Data failed with exception: ").arg(e.what());
             displayErrorMessage(QString("Parsing Data failed with exception: ").arg(e.what()));
+            return;
         }
 
         urlLocationData.url = input;
@@ -117,7 +118,17 @@ void MainWindow::handleLocationData(const QString &locationDataJsonString, const
     }
 
     Persistence::Model::IpBasedLocationData ipLocationData;
-    ipLocationData.FromJson(locationDataJsonString);
+
+    try
+    {
+        ipLocationData.FromJson(locationDataJsonString);
+    }
+    catch (const std::exception& e)
+    {
+        qDebug() << QString("Parsing Data failed with exception: ").arg(e.what());
+        displayErrorMessage(QString("Parsing Data failed with exception: ").arg(e.what()));
+        return;
+    }
 
     QtConcurrent::run([this, ipLocationData](){ mIpBasedRepository->Add(ipLocationData); });
 }
