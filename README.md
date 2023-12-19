@@ -94,14 +94,35 @@ ApiKey="364fd3bbd196e5c709e2d7f3136cfc23"
 
 ```
 
-## Application Usage
+## Application Usage Instructions
 
-### Entering URL and IP Address
+### Entering URLs and IP Addresses
 
-When using the application, please follow these guidelines for entering URLs and IP addresses:
+#### Accepted Input Formats
 
-- **URL Input**: Enter URLs without any scheme. For example, instead of typing `http://www.example.com` or `https://www.example.com`, simply enter `www.example.com`.
-- **IP Address Input**: Input IP addresses in their standard format, without any prefixes or additional characters. For example, use `192.168.1.1` instead of `http://192.168.1.1`.
+##### URLs
+- The application accepts the following URL formats:
+  - URLs without the protocol scheme. For example, use `www.example.com` or `www.testsite.com` instead of `https://www.example.com` or `http://www.testsite.com`.
+  - URLs with subdomains but without the protocol scheme, e.g., `subdomain.example.org/path?query=123`.
+  - **Note:** URLs entered with the http/https protocols (like `http://`, `https://`) will not yield expected results.
+
+##### IPv4 Addresses
+- The application accepts standard IPv4 addresses, such as:
+  - `192.168.1.1`
+  - `10.0.0.1`
+  - `172.16.254.1`
+
+##### IPv6 Addresses
+- The application accepts standard IPv6 addresses, including:
+  - Extended addresses, e.g., `2001:0db8:85a3:0000:0000:8a2e:0370:7334`.
+  - Compressed addresses, e.g., `::1`, `fe80::1ff:fe23:4567:890a`.
+
+#### Invalid Data Formats
+
+The application does not accept the following formats:
+- Empty strings or spaces only.
+- URLs with schemes or potentially harmful scripts, e.g., `http://example.com/<script>`, `https://example.com/|pipe`.
+- JavaScript code, e.g., `javascript:alert('XSS')`.
 
 
 # GEOLOCATION DATA MANAGER UNIT TESTS
