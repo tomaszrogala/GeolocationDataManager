@@ -111,6 +111,12 @@ void MainWindow::handleLocationData(const QString &locationDataJsonString, const
             return;
         }
 
+        if(urlLocationData.countryName.isNull() || urlLocationData.countryName.isEmpty())
+        {
+            displayErrorMessage("Location data not found!");
+            return;
+        }
+
         urlLocationData.url = input;
 
         QtConcurrent::run([this, urlLocationData](){ mUrlBasedRepository->Add(urlLocationData); });
@@ -127,6 +133,12 @@ void MainWindow::handleLocationData(const QString &locationDataJsonString, const
     {
         qDebug() << QString("Parsing Data failed with exception: ").arg(e.what());
         displayErrorMessage(QString("Parsing Data failed with exception: ").arg(e.what()));
+        return;
+    }
+
+    if(ipLocationData.countryName.isNull() || ipLocationData.countryName.isEmpty())
+    {
+        displayErrorMessage("Location data not found!");
         return;
     }
 
@@ -186,7 +198,7 @@ void MainWindow::onDeleteButtonClicked()
 
         if(data.url.isNull() || data.url.isEmpty())
         {
-            emit displayErrorMessage("Not Found.");
+            displayErrorMessage("Not Found.");
             return;
         }
 
@@ -198,7 +210,7 @@ void MainWindow::onDeleteButtonClicked()
 
         if(data.ip.isNull() || data.ip.isEmpty())
         {
-            emit displayErrorMessage("Not Found.");
+            displayErrorMessage("Not Found.");
             return;
         }
 
